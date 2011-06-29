@@ -1,0 +1,21 @@
+Name:           MiniSat2
+Version:        0.0.1
+Cabal-Version:  >= 1.2
+License:        BSD3
+Author:         Masahiro Sakai
+Maintainer:     Masahiro Sakai <masahiro.sakai@gmail.com>
+Category:       Algorithms
+Synopsis:       MiniSat2 wrapper
+Stability:      experimental
+Extra-Source-Files: cbits/Alg.h cbits/BasicHeap.h cbits/BoxedVec.h cbits/Heap.h cbits/Map.h cbits/Queue.h cbits/Solver.h cbits/SolverTypes.h cbits/Sort.h cbits/Vec.h samples/Test.hs
+
+Library
+  Build-Depends:      base, array
+  Hs-Source-Dirs:     src
+  Exposed-Modules:    MiniSat2
+  GHC-Options:        -O -Wall
+  Extensions:         ForeignFunctionInterface GeneralizedNewtypeDeriving
+  C-Sources:          cbits/Solver.cxx cbits/hsminisat.cxx
+  Include-Dirs:       cbits
+  Ld-Options:         -lstdc++
+
