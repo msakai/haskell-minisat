@@ -291,5 +291,5 @@ lFalse = Just False
 pushLits :: Ptr CVecLit -> [Lit] -> IO ()
 pushLits p ls = mapM_ f ls
   where
-    f (Pos (Var v)) = hsminisat_vecLit_pushVar p v 1
-    f (Neg (Var v)) = hsminisat_vecLit_pushVar p v 0
+    f (Pos (Var v)) = hsminisat_vecLit_pushVar p v 0
+    f (Neg (Var v)) = hsminisat_vecLit_pushVar p v 1

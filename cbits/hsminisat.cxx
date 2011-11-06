@@ -98,7 +98,7 @@ extern "C" int hsminisat_value(Solver* solver, Var x)
 
 extern "C" int hsminisat_modelValue(Solver* solver, Var v)
 {
-    Lit l(v, true);
+    Lit l(v, false);
     return lbool2int(solver->modelValue(l));
 }
 
