@@ -7,6 +7,7 @@ Author:         Masahiro Sakai
 Maintainer:     Masahiro Sakai <masahiro.sakai@gmail.com>
 Category:       Algorithms
 Synopsis:       MiniSat2 wrapper
+Description:    Low-level MiniSat2 wrapper
 Stability:      experimental
 Build-Type:	Simple
 Extra-Source-Files: cbits/Alg.h cbits/BasicHeap.h cbits/BoxedVec.h cbits/Heap.h cbits/Map.h cbits/Queue.h cbits/Solver.h cbits/SolverTypes.h cbits/Sort.h cbits/Vec.h samples/Test.hs
