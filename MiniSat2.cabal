@@ -2,6 +2,7 @@ Name:           MiniSat2
 Version:        0.0.3
 Cabal-Version:  >= 1.6
 License:        BSD3
+License-File:   COPYING
 Author:         Masahiro Sakai
 Maintainer:     Masahiro Sakai <masahiro.sakai@gmail.com>
 Category:       Algorithms
