@@ -248,11 +248,11 @@ foreign import ccall unsafe "&" hsminisat_deleteSolver
 foreign import ccall unsafe hsminisat_newVar
     :: Ptr CSolver -> CInt -> CInt -> IO CVar
 
-foreign import ccall threadsafe hsminisat_addClause 
+foreign import ccall safe hsminisat_addClause 
     :: Ptr CSolver -> Ptr CVecLit -> IO CInt
-foreign import ccall threadsafe hsminisat_simplify
+foreign import ccall safe hsminisat_simplify
     :: Ptr CSolver -> IO CInt
-foreign import ccall threadsafe hsminisat_solve 
+foreign import ccall safe hsminisat_solve 
     :: Ptr CSolver -> Ptr CVecLit -> IO CInt
 foreign import ccall unsafe hsminisat_okay
     :: Ptr CSolver -> IO CInt
