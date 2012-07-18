@@ -35,3 +35,17 @@ Library
   CC-Options:         -Wall -Wno-parentheses -D __STDC_LIMIT_MACROS -D __STDC_FORMAT_MACROS
   Include-Dirs:       cbits
   Extra-Libraries:    stdc++
+
+Test-suite Test
+  Type:               exitcode-stdio-1.0
+  HS-Source-Dirs:     src
+  Main-is:            Test.hs
+  Build-depends:      base >=4 && <5, array, test-framework,test-framework-hunit,HUnit
+  Extensions:         ForeignFunctionInterface GeneralizedNewtypeDeriving
+  C-Sources:
+     cbits/core/Solver.cc
+     cbits/utils/Options.cc
+     cbits/hsminisat.cxx
+  CC-Options:         -Wall -Wno-parentheses -D __STDC_LIMIT_MACROS -D __STDC_FORMAT_MACROS
+  Include-Dirs:       cbits
+  Extra-Libraries:    stdc++
