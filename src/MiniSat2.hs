@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  MiniSat2
@@ -45,8 +46,9 @@ module MiniSat2
     , nVars
     --, vars
 
-    -- * Extra results
-    --, model
+    -- * Extracting results
+    , Model
+    , model
 
     -- * Mode of operation
 
@@ -55,11 +57,16 @@ module MiniSat2
 
 import Foreign hiding (new)
 import Foreign.C
-import Foreign.Marshal.Utils hiding (new)
-import Data.Array
+import Data.Array.IArray
+#if MIN_VERSION_array(0,4,0)
+import Data.Array.IO hiding (unsafeFreeze)
+import Data.Array.Unsafe (unsafeFreeze)
+#else
 import Data.Array.IO
-import Control.Monad (liftM, (=<<))
+#endif
+import Control.Monad (liftM, forM_)
 import Control.Exception (bracket)
+import System.IO
 
 {--------------------------------------------------------------------
   The @Solver@ type
@@ -81,7 +88,9 @@ newtype Var = Var CVar deriving (Show, Eq, Ord, Enum)
 
 instance Ix Var where
     range (Var a, Var b) =
-        map (Var . fromIntegral) (range (fromIntegral a  :: Int, fromIntegral b))
+        map (Var . fromIntegral) (range (fromIntegral a :: Int, fromIntegral b))
+    index (Var a, Var b) (Var x) =
+        index (fromIntegral a :: Int, fromIntegral b) (fromIntegral x)
     inRange (Var a, Var b) (Var x) =
         inRange (fromIntegral a, fromIntegral b) (fromIntegral x :: Int)
 
@@ -168,19 +177,19 @@ class Valued a where
     -- |The current value.
     value :: Solver -> a -> IO LBool
     -- |The value in the last model
-    modelValue :: Solver -> a -> IO LBool
+    modelValue :: Solver -> a -> IO Bool
 
 instance Valued Var where
     value s (Var cv) =
         withSolver s $ \p -> liftM decodeLBool $ hsminisat_value p cv
     modelValue s (Var v) =
-        withSolver s $ \p -> liftM decodeLBool $ hsminisat_modelValue p v
+        withSolver s $ \p -> liftM decodeBool $ hsminisat_modelValue p v
 
 instance Valued Lit where
     value s (Pos v) = value s v
     value s (Neg v) = liftM (fmap not) (value s v)
     modelValue s (Pos v) = modelValue s v
-    modelValue s (Neg v) = liftM (fmap not) (modelValue s v)
+    modelValue s (Neg v) = liftM not (modelValue s v)
 
 -- |The current number of assigned literals.
 nAssigns :: Solver -> IO Int
@@ -207,15 +216,17 @@ vars s = do
   Extra results:
 --------------------------------------------------------------------}
 
+type Model = Array Var Bool
+
 -- If problem is satisfiable, this vector contains the model (if any).
-model :: Solver -> IO (Array Var LBool)
+model :: Solver -> IO Model
 model s =
   withSolver s $ \p -> do
     n <- hsminisat_nVars p
-    a <- newArray_ (Var 0, Var (n - 1)) :: IO (IOArray Var LBool)
-    flip mapM_ [0..(n-1)] $ \i -> do
+    a <- newArray_ (Var 0, Var (n - 1)) :: IO (IOArray Var Bool)
+    forM_ [0..(n-1)] $ \i -> do
       b <- hsminisat_modelValue p i
-      writeArray a (Var i) (decodeLBool b)
+      writeArray a (Var i) (decodeBool b)
     unsafeFreeze a
 
 {--------------------------------------------------------------------
@@ -283,10 +294,16 @@ decodeLBool :: CInt -> LBool
 decodeLBool 0    = Nothing
 decodeLBool 1    = lTrue
 decodeLBool (-1) = lFalse
+decodeLBool x    = error $ "MiniSat2.decodeLBool: unexpected value " ++ show x
 
 lTrue, lFalse :: LBool
 lTrue  = Just True
 lFalse = Just False
+
+decodeBool :: CInt -> Bool
+decodeBool 1    = True
+decodeBool (-1) = False
+decodeBool x    = error $ "MiniSat2.decodeBool: unexpected value " ++ show x
 
 pushLits :: Ptr CVecLit -> [Lit] -> IO ()
 pushLits p ls = mapM_ f ls
