@@ -64,6 +64,7 @@ import Data.Array.Unsafe (unsafeFreeze)
 #else
 import Data.Array.IO
 #endif
+import Data.Array.Unboxed
 import Control.Monad (liftM, forM_)
 import Control.Exception (bracket)
 import System.IO
@@ -216,14 +217,14 @@ vars s = do
   Extra results:
 --------------------------------------------------------------------}
 
-type Model = Array Var Bool
+type Model = UArray Var Bool
 
 -- If problem is satisfiable, this vector contains the model (if any).
 model :: Solver -> IO Model
 model s =
   withSolver s $ \p -> do
     n <- hsminisat_nVars p
-    a <- newArray_ (Var 0, Var (n - 1)) :: IO (IOArray Var Bool)
+    a <- newArray_ (Var 0, Var (n - 1)) :: IO (IOUArray Var Bool)
     forM_ [0..(n-1)] $ \i -> do
       b <- hsminisat_modelValue p i
       writeArray a (Var i) (decodeBool b)
