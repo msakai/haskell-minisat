@@ -11,6 +11,7 @@ Description:    Low-level MiniSat2 wrapper
 Stability:      experimental
 Build-Type:	Simple
 Extra-Source-Files:
+  README.md
   cbits/core/*.h
   cbits/mtl/*.h
   cbits/utils/*.h
