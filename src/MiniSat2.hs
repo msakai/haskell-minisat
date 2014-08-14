@@ -58,13 +58,13 @@ module MiniSat2
 import Foreign hiding (new)
 import Foreign.C
 import Data.Array.IArray
-#if MIN_VERSION_array(0,4,0)
-import Data.Array.IO hiding (unsafeFreeze)
-import Data.Array.Unsafe (unsafeFreeze)
-#else
+#if MIN_VERSION_array(0,5,0)
 import Data.Array.IO
+#else
+import Data.Array.IO hiding (unsafeFreeze)
 #endif
 import Data.Array.Unboxed
+import Data.Array.Unsafe (unsafeFreeze)
 import Control.Monad (liftM, forM_)
 import Control.Exception (bracket)
 import System.IO
