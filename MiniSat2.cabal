@@ -16,8 +16,9 @@ Extra-Source-Files:
   cbits/mtl/*.h
   cbits/utils/*.h
   samples/Test.hs
-  minisat/*
-  minisat/doc/*
+  minisat/LICENSE
+  minisat/README
+  minisat/doc/ReleaseNotes-2.2.0.txt
 
 Source-Repository head
   type:     git
