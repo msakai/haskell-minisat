@@ -67,7 +67,6 @@ import Data.Array.Unboxed
 import Data.Array.Unsafe (unsafeFreeze)
 import Control.Monad (liftM, forM_)
 import Control.Exception (bracket)
-import System.IO
 
 {--------------------------------------------------------------------
   The @Solver@ type
